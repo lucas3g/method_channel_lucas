@@ -40,11 +40,14 @@ class BluetoothController {
     final result = await _channel
         .invokeMethod('connectDevice', {'address': address}) as bool;
 
+    print('STATUS CONEXAO: $result');
+
     return result;
   }
 
-  Future<bool> printNewLine() async {
-    final result = await _channel.invokeMethod('printNewLine') as bool;
+  Future<bool> printNewLine(int count) async {
+    final result =
+        await _channel.invokeMethod('printNewLine', {'count': count}) as bool;
 
     return result;
   }

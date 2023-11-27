@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_state.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_store.dart';
 import 'package:method_channel_lucas/controllers/connection_controller.dart';
+import 'package:method_channel_lucas/controllers/connection_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +15,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final BluetoothStore bluetoothStore = BluetoothStore();
   final ConnectionController connectionController = ConnectionController();
+
+  late int selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +64,32 @@ class _HomePageState extends State<HomePage> {
                                 final stateConn = connectionController.state;
 
                                 return ListTile(
+                                  leading: index == selectedIndex &&
+                                          stateConn is LoadingConnection
+                                      ? const CircularProgressIndicator()
+                                      : null,
                                   title: Text(
                                     device['name'],
                                   ),
                                   subtitle: Text(
-                                    (stateConn is ConnectionState)
+                                    (stateConn is ConnectedState) &&
+                                            device['address'] ==
+                                                stateConn.deviceAddres
                                         ? 'Impressora conectada'
                                         : device['address'],
+                                    style: TextStyle(
+                                      color: (stateConn is ConnectedState) &&
+                                              device['address'] ==
+                                                  stateConn.deviceAddres
+                                          ? Colors.green
+                                          : Colors.black,
+                                    ),
                                   ),
                                   onTap: () async {
+                                    setState(() {
+                                      selectedIndex = index;
+                                    });
+
                                     await connectionController
                                         .connectDevice(device['address']);
                                   },
@@ -85,33 +105,57 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 }),
-                ElevatedButton(
-                  onPressed: () async {
-                    await connectionController.printCustom(
-                      'Pagina de Teste',
-                      1,
-                      1,
-                    );
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(),
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () async {
+                          await connectionController.printCustom(
+                            'Pagina de Teste',
+                            1,
+                            1,
+                          );
 
-                    for (var i = 0; i < 10; i++) {
-                      await connectionController.printNewLine();
-                    }
-                  },
-                  child: const Text('Imprimir Pagina de Teste'),
+                          await connectionController.printNewLine(10);
+                        },
+                        child: const Text('Imprimir Pagina de Teste'),
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    for (var i = 0; i < 10; i++) {
-                      await connectionController.printNewLine();
-                    }
-                  },
-                  child: const Text('Imprimir 10 Linhas'),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(),
+                            padding: EdgeInsets.zero),
+                        onPressed: () async {
+                          await connectionController.printNewLine(10);
+                        },
+                        child: const Text('Imprimir 10 Linhas'),
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await bluetoothStore.getDevicesPaired();
-                  },
-                  child: const Text('Buscar Devices'),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(),
+                            padding: EdgeInsets.zero),
+                        onPressed: () async {
+                          await bluetoothStore.getDevicesPaired();
+                        },
+                        child: const Text('Buscar Devices'),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

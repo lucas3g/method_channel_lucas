@@ -24,12 +24,12 @@ abstract class ConnectionControllerBase with Store {
   @action
   Future connectDevice(String address) async {
     try {
-      emit(NotConnectedState());
+      emit(LoadingConnection());
 
       final result = await bluetoothController.connectDevice(address);
 
       if (result) {
-        emit(ConnectedState());
+        emit(ConnectedState(deviceAddres: address));
 
         return;
       }
@@ -43,8 +43,8 @@ abstract class ConnectionControllerBase with Store {
   }
 
   @action
-  Future printNewLine() async {
-    await bluetoothController.printNewLine();
+  Future printNewLine(int count) async {
+    await bluetoothController.printNewLine(count);
   }
 
   @action

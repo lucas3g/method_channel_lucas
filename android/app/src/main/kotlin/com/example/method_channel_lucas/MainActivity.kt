@@ -51,7 +51,10 @@ class MainActivity(): FlutterActivity() {
             }
 
             if (call.method == "printNewLine"){
-                result.success(androidBlue.printNewLine());
+                var args = call.arguments as Map<String, *>;
+                var count = args["count"] as Int;
+
+                result.success(androidBlue.printNewLine(count));
             }
 
             if (call.method == "printCustom"){

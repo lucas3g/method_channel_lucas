@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_state.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_store.dart';
+import 'package:method_channel_lucas/controllers/connection_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final BluetoothStore bluetoothStore = BluetoothStore();
+  final ConnectionController connectionController = ConnectionController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,24 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, index) {
                               final device = devices[index];
 
-                              return Text(device['name']);
+                              return Observer(builder: (context) {
+                                final stateConn = connectionController.state;
+
+                                return ListTile(
+                                  title: Text(
+                                    device['name'],
+                                  ),
+                                  subtitle: Text(
+                                    (stateConn is ConnectionState)
+                                        ? 'Impressora conectada'
+                                        : device['address'],
+                                  ),
+                                  onTap: () async {
+                                    await connectionController
+                                        .connectDevice(device['address']);
+                                  },
+                                );
+                              });
                             },
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 10),
@@ -66,6 +85,28 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 }),
+                ElevatedButton(
+                  onPressed: () async {
+                    await connectionController.printCustom(
+                      'Pagina de Teste',
+                      1,
+                      1,
+                    );
+
+                    for (var i = 0; i < 10; i++) {
+                      await connectionController.printNewLine();
+                    }
+                  },
+                  child: const Text('Imprimir Pagina de Teste'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    for (var i = 0; i < 10; i++) {
+                      await connectionController.printNewLine();
+                    }
+                  },
+                  child: const Text('Imprimir 10 Linhas'),
+                ),
                 ElevatedButton(
                   onPressed: () async {
                     await bluetoothStore.getDevicesPaired();

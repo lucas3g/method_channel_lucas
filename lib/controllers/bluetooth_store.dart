@@ -24,8 +24,6 @@ abstract class BluetoothStoreBase with Store {
   Future getDevicesPaired() async {
     emit(state.loading());
 
-    startScan();
-
     final paireds = await bluetoothController.getPairedDevices();
 
     emit(state.success(paireds));

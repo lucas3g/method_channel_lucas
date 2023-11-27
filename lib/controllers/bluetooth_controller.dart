@@ -35,4 +35,29 @@ class BluetoothController {
 
     return result;
   }
+
+  Future<bool> connectDevice(String address) async {
+    final result = await _channel
+        .invokeMethod('connectDevice', {'address': address}) as bool;
+
+    return result;
+  }
+
+  Future<bool> printNewLine() async {
+    final result = await _channel.invokeMethod('printNewLine') as bool;
+
+    return result;
+  }
+
+  Future<bool> printCustom(String text, int size, int align) async {
+    final args = {
+      "text": text,
+      "size": size,
+      "align": align,
+    };
+
+    final result = await _channel.invokeMethod('printCustom', args) as bool;
+
+    return result;
+  }
 }

@@ -3,7 +3,7 @@ package com.example.method_channel_lucas
 import android.bluetooth.BluetoothManager
 
 import android.widget.Toast
-import com.elsistemas.bluetoothprinterlib.data.AndroidBluetoothController
+import com.elsistemas.bluetoothprinterellib.BlueThermalPrinterPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -26,7 +26,7 @@ class MainActivity(): FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        val androidBlue = AndroidBluetoothController(applicationContext)
+        val androidBlue = BlueThermalPrinterPlugin(applicationContext)
 
         var channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
 
@@ -39,16 +39,29 @@ class MainActivity(): FlutterActivity() {
                 result.success(10)
             }
 
-            if (call.method == "startDiscovery"){
-              androidBlue.startDiscovery()
-            }
-
             if (call.method == "getPairedDevices"){
-               result.success(androidBlue.pairedDevices.value)
+                result.success(androidBlue.pairedDevices)
             }
 
-            if (call.method == "getScannedDevices"){
-                result.success(androidBlue.scannedDevices.value)
+            if (call.method == "connectDevice"){
+                var args = call.arguments as Map<String, *>;
+                var address = args["address"].toString();
+
+                result.success(androidBlue.connect(address));
+            }
+
+            if (call.method == "printNewLine"){
+                result.success(androidBlue.printNewLine());
+            }
+
+            if (call.method == "printCustom"){
+                var args = call.arguments as Map<String, *>;
+                var text = args["text"].toString();
+                var size = args["size"] as Int;
+                var align = args["align"] as Int;
+
+
+                result.success(androidBlue.printCustom(text,size,align,null));
             }
         }
     }

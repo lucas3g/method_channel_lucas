@@ -31,14 +31,6 @@ class MainActivity(): FlutterActivity() {
         var channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelName)
 
         channel.setMethodCallHandler { call, result ->
-            if (call.method == "showToast"){
-                Toast.makeText(context, "Foooi", Toast.LENGTH_LONG).show()
-            }
-
-            if (call.method == "returnValue"){
-                result.success(10)
-            }
-
             if (call.method == "getPairedDevices"){
                 result.success(androidBlue.pairedDevices)
             }

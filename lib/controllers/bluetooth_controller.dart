@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
@@ -27,7 +28,9 @@ class BluetoothController {
   Future<List> getPairedDevices() async {
     final result = await _channel.invokeMethod('getPairedDevices');
 
-    return result;
+    final jsonList = jsonDecode(result);
+
+    return jsonList;
   }
 
   Future<List> getScannedDevices() async {

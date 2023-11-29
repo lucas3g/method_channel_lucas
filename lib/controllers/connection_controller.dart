@@ -1,5 +1,8 @@
+import 'dart:async';
+
+import 'package:flutter/services.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_controller.dart';
-import 'package:method_channel_lucas/controllers/connection_state.dart';
+import 'package:method_channel_lucas/controllers/connection_state.dart' as cs;
 import 'package:mobx/mobx.dart';
 
 part 'connection_controller.g.dart';
@@ -11,34 +14,34 @@ abstract class ConnectionControllerBase with Store {
   final BluetoothController bluetoothController = BluetoothController.instance;
 
   @observable
-  ConnectionState _state = NotConnectedState();
+  cs.ConnectionState _state = cs.NotConnectedState();
 
   @computed
-  ConnectionState get state => _state;
+  cs.ConnectionState get state => _state;
 
   @action
-  emit(ConnectionState newState) {
+  emit(cs.ConnectionState newState) {
     _state = newState;
   }
 
   @action
   Future connectDevice(String address) async {
     try {
-      emit(LoadingConnection());
+      emit(cs.LoadingConnection());
 
       final result = await bluetoothController.connectDevice(address);
 
       if (result) {
-        emit(ConnectedState(deviceAddres: address));
+        emit(cs.ConnectedState(deviceAddres: address));
 
         return;
       }
 
-      emit(NotConnectedState());
+      emit(cs.NotConnectedState());
 
       return result;
     } catch (e) {
-      emit(NotConnectedState());
+      emit(cs.NotConnectedState());
     }
   }
 
@@ -50,5 +53,17 @@ abstract class ConnectionControllerBase with Store {
   @action
   Future printCustom(String text, int size, int align) async {
     await bluetoothController.printCustom(text, size, align);
+  }
+
+  @action
+  Future printImage(String bmp) async {
+    final bytes = await getImageFromAssets(bmp);
+
+    await bluetoothController.printImage(bytes);
+  }
+
+  Future<Uint8List> getImageFromAssets(String path) async {
+    ByteData data = await rootBundle.load(path);
+    return data.buffer.asUint8List();
   }
 }

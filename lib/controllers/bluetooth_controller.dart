@@ -66,4 +66,44 @@ class BluetoothController {
 
     return result;
   }
+
+  Future<bool> printImage(Uint8List bmp) async {
+    final result =
+        await _channel.invokeMethod('printImage', {'image': bmp}) as bool;
+
+    return result;
+  }
+
+  Future<void> register() async {
+    await _channel.invokeMethod('register');
+  }
+
+  Future<void> startPrint() async {
+    await _channel.invokeMethod('startPrint');
+  }
+
+  Future<void> printText(String text) async {
+    await _channel.invokeMethod('printText', {'text': text});
+  }
+
+  Future<void> printImageIngenico(String bmp) async {
+    final bytes = await getImageFromAssets(bmp);
+
+    await _channel.invokeMethod('printImageIngenico', {'image': bytes});
+  }
+
+  Future<void> addTextByte(String text) async {
+    final bytes = stringToByte(text);
+
+    await _channel.invokeMethod('addTextByte', {'text': bytes});
+  }
+
+  Uint8List stringToByte(String text) {
+    return utf8.encode(text);
+  }
+
+  Future<Uint8List> getImageFromAssets(String path) async {
+    ByteData data = await rootBundle.load(path);
+    return data.buffer.asUint8List();
+  }
 }

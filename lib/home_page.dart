@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:method_channel_lucas/controllers/bluetooth_controller.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_state.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_store.dart';
 import 'package:method_channel_lucas/controllers/connection_controller.dart';
@@ -15,6 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final BluetoothStore bluetoothStore = BluetoothStore();
   final ConnectionController connectionController = ConnectionController();
+
+  final BluetoothController bluetoothController = BluetoothController.instance;
 
   late int selectedIndex = -1;
 
@@ -114,6 +117,25 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.zero,
                         ),
                         onPressed: () async {
+                          await connectionController
+                              .printImage('assets/images/NFE.bmp');
+
+                          await connectionController.printNewLine(10);
+                        },
+                        child: const Text('Imprimir Image'),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(),
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () async {
                           await connectionController.printCustom(
                             'Pagina de Teste',
                             1,
@@ -153,6 +175,55 @@ class _HomePageState extends State<HomePage> {
                           await bluetoothStore.getDevicesPaired();
                         },
                         child: const Text('Buscar Devices'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(),
+                            padding: EdgeInsets.zero),
+                        onPressed: () async {
+                          await bluetoothController.register();
+                        },
+                        child: const Text('Registrar'),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(),
+                            padding: EdgeInsets.zero),
+                        onPressed: () async {
+                          await bluetoothController
+                              .printImageIngenico('assets/images/qr.png');
+                        },
+                        child: const Text('Imprimir NFCe'),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(),
+                            padding: EdgeInsets.zero),
+                        onPressed: () async {
+                          bluetoothController.addTextByte('Testeeeeee');
+
+                          await bluetoothController.startPrint();
+                        },
+                        child: const Text('Imprimir Texto Byte'),
                       ),
                     ),
                   ],

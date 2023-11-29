@@ -72,5 +72,5 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     implementation("com.google.dagger:hilt-android-compiler:2.44")
-    implementation files('C:\\Users\\lucas\\Desktop\\method_channel_lucas\\android\\app\\src\\main\\libs\\BluetoothPrinterELLib-debug.aar')
+    implementation fileTree(dir: 'C:\\Users\\Lucas\\Desktop\\method_channel_lucas\\android\\app\\src\\main\\libs', include: ['*.aar', '*.jar'], exclude: [])
 }

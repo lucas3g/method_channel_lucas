@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:method_channel_lucas/controllers/bluetooth_controller.dart';
 import 'package:method_channel_lucas/controllers/bluetooth_state.dart';
 import 'package:mobx/mobx.dart';

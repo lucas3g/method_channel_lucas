@@ -86,6 +86,16 @@ class BluetoothController {
     await _channel.invokeMethod('printText', {'text': text});
   }
 
+  Future<void> printTextPlugin(String text) async {
+    await _channel.invokeMethod('printTextPlugin', {'text': text});
+  }
+
+  Future<void> printImagePositivo(String bmp) async {
+    final bytes = await getImageFromAssets(bmp);
+
+    await _channel.invokeMethod('printImagePositivo', {'image': bytes});
+  }
+
   Future<void> printImageIngenico(String bmp) async {
     final bytes = await getImageFromAssets(bmp);
 

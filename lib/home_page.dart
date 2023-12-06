@@ -219,11 +219,10 @@ class _HomePageState extends State<HomePage> {
                             shape: const RoundedRectangleBorder(),
                             padding: EdgeInsets.zero),
                         onPressed: () async {
-                          bluetoothController.addTextByte('Testeeeeee');
-
-                          await bluetoothController.startPrint();
+                          await bluetoothController
+                              .printImagePositivo('assets/images/qr.png');
                         },
-                        child: const Text('Imprimir Texto Byte'),
+                        child: const Text('Imprimir Image Plugin'),
                       ),
                     ),
                   ],
